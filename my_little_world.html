@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Little World 🌷</title>
+<style>
+:root{
+ --ink:#5d5861;--muted:#8e8792;--cream:#fffaf4;--pink:#f5dce4;--mint:#dceee5;
+ --lav:#e9e2f5;--yellow:#f8edc9;--brown:#b99583;--line:#eee5e1;
+ --shadow:0 10px 30px rgba(108,88,99,.10)
+}
+*{box-sizing:border-box}
+body{margin:0;background:#fbf7f3;color:var(--ink);font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer;border:0;border-radius:14px;padding:10px 14px;background:#eee7f4;color:#625a6a;font-weight:700;transition:.15s}
+button:hover{transform:translateY(-1px);filter:brightness(.98)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.app{max-width:1440px;margin:auto;padding:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,#f7dce5,#e5e1f4);display:grid;place-items:center;font-size:25px}
+h1{font-size:23px;margin:0;letter-spacing:-.5px}
+.subtitle{font-size:12px;color:var(--muted);margin-top:3px}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:white;border:1px solid var(--line);border-radius:99px;padding:9px 13px;font-size:13px;font-weight:700;box-shadow:0 3px 10px #6b56600a}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;align-items:start}
+.game-card,.side-card{background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
+.city-top{display:flex;justify-content:space-between;align-items:center;padding:16px 18px 10px;gap:10px;flex-wrap:wrap}
+.city-top h2{font-size:17px;margin:0}
+.city-top p{font-size:12px;color:var(--muted);margin:4px 0 0}
+.tools{display:flex;gap:7px;flex-wrap:wrap}
+.tools button{font-size:12px;padding:8px 11px}
+#city{display:block;width:100%;height:auto;min-height:440px;background:#e9f2e9;touch-action:manipulation}
+.hint{padding:10px 16px;background:#fffdfb;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.sidebar{display:grid;gap:14px}
+.side-card{padding:16px}
+.side-card h3{margin:0 0 11px;font-size:15px}
+.profile{display:flex;align-items:center;gap:11px}
+.avatar{width:50px;height:50px;border-radius:17px;background:#f8e5e9;display:grid;place-items:center;font-size:28px}
+.profile strong{display:block;font-size:14px}
+.profile small{color:var(--muted)}
+.name-row{display:flex;gap:6px;margin-top:12px}
+input{min-width:0;width:100%;border:1px solid var(--line);border-radius:11px;padding:9px 10px;color:var(--ink);background:#fffdfb}
+.name-row button{padding:8px 11px}
+.build-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.build-btn{background:#fbf7f5;border:1px solid var(--line);padding:10px 7px;text-align:left;min-height:74px}
+.build-btn span{font-size:23px;display:block;margin-bottom:4px}
+.build-btn b{font-size:12px;display:block}
+.build-btn small{font-size:10px;color:var(--muted)}
+.action{width:100%;margin-top:8px;background:#e2eee6}
+.pink{background:#f7e4e9}
+.yellow{background:#f8efcf}
+.lav{background:#eee8f8}
+.mini-status{font-size:12px;color:var(--muted);line-height:1.5}
+#toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);background:#5f5964;color:white;padding:11px 16px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:10;box-shadow:var(--shadow)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.modal-backdrop{position:fixed;inset:0;background:#3d354855;display:none;place-items:center;padding:16px;z-index:20}
+.modal-backdrop.show{display:grid}
+.modal{background:#fffdfb;border-radius:24px;padding:22px;max-width:440px;width:100%;box-shadow:0 20px 60px #34263833}
+.modal h2{margin:0 0 7px;font-size:20px}
+.modal p{font-size:13px;color:var(--muted);line-height:1.5}
+.game-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0}
+.game-options button{font-size:24px;padding:16px 5px;background:#f4edf8}
+.game-options button.selected{outline:3px solid #b8a6d5}
+.result{min-height:24px;font-size:13px;font-weight:700;color:#8b718d}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:15px}
+footer{text-align:center;color:#aaa0a8;font-size:11px;padding:18px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{grid-template-columns:repeat(2,minmax(0,1fr))}.sidebar .wide{grid-column:1/-1}#city{min-height:360px}}
+@media(max-width:520px){.app{padding:10px}.stats{width:100%}.pill{font-size:11px;padding:7px 9px}.sidebar{grid-template-columns:1fr}.city-top{padding:13px}.city-top h2{font-size:15px}#city{min-height:300px}.tools button{font-size:11px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="brand"><div class="logo">🌷</div><div><h1>My Little World</h1><div class="subtitle">A tiny place to build your big dreams</div></div></div>
+ <div class="stats"><div class="pill">🪙 <span id="coins">180</span> coins</div><div class="pill">🏡 <span id="buildings">1</span> buildings</div><div class="pill">🌳 <span id="trees">3</span> trees</div></div>
+</header>
+<div class="layout">
+ <main class="game-card">
+  <div class="city-top"><div><h2>🌼 Little Blossom Town</h2><p>Tap an empty plot, then choose what to build.</p></div>
+   <div class="tools"><button id="plantMode" class="pink">🌳 Plant tree · 15</button><button id="resetView" class="lav">↺ Reset view</button></div>
+  </div>
+  <canvas id="city" width="900" height="650" aria-label="Isometric town map"></canvas>
+  <div class="hint">💡 Tip: Select a building on the right, then tap an empty plot. Tap an existing building to see its details.</div>
+ </main>
+ <aside class="sidebar">
+  <section class="side-card">
+   <h3>👋 Your little life</h3>
+   <div class="profile"><div class="avatar" id="avatar">🐻</div><div><strong id="playerName">Little Dreamer</strong><small>Town resident · Level 1</small></div></div>
+   <div class="name-row"><input id="nameInput" maxlength="18" placeholder="Your character name"><button id="saveName">Save</button></div>
+  </section>
+  <section class="side-card">
+   <h3>🏗️ Build your town</h3>
+   <div class="build-grid" id="buildGrid">
+    <button class="build-btn" data-type="house"><span>🏡</span><b>Sweet Home</b><small>80 coins</small></button>
+    <button class="build-btn" data-type="cafe"><span>☕</span><b>Little Café</b><small>100 coins</small></button>
+    <button class="build-btn" data-type="school"><span>🏫</span><b>School</b><small>120 coins</small></button>
+    <button class="build-btn" data-type="shop"><span>🛍️</span><b>Gift Shop</b><small>110 coins</small></button>
+    <button class="build-btn" data-type="music"><span>🎤</span><b>Music Hall</b><small>150 coins</small></button>
+    <button class="build-btn" data-type="park"><span>🌷</span><b>Flower Park</b><small>70 coins</small></button>
+   </div>
+   <button class="action" id="cancelBuild">✋ Cancel selection</button>
+   <div class="mini-status" id="selectionText" style="margin-top:8px">No building selected.</div>
+  </section>
+  <section class="side-card wide">
+   <h3>🎮 Take a little break</h3>
+   <p class="mini-status">Play a quick memory mini-game to earn coins. No rush, just have fun!</p>
+   <button class="action pink" id="playGame">Play memory match · Earn up to 40 coins</button>
+  </section>
+  <section class="side-card wide">
+   <h3>💾 Your progress</h3>
+   <p class="mini-status" id="saveStatus">Your town saves automatically on this device.</p>
+   <button class="action lav" id="saveGame">Save my world now</button>
+  </section>
+ </aside>
+</div>
+<footer>Made for slow days, small dreams and happy little places 🌷 · Version 1.0 prototype</footer>
+</div>
+<div id="toast"></div>
+<div class="modal-backdrop" id="modal">
+ <div class="modal">
+  <h2>🧠 Memory Garden</h2>
+  <p>Find the matching pair! Choose two cards. Complete all pairs to earn 40 coins.</p>
+  <div class="game-options" id="cards"></div>
+  <div class="result" id="gameResult">Find all 3 pairs to win.</div>
+  <div class="modal-actions"><button id="closeGame">Close</button><button id="restartGame" class="pink">Restart</button></div>
+ </div>
+</div>
+<script>
+(() => {
+const canvas=document.getElementById('city'),ctx=canvas.getContext('2d');
+const W=900,H=650, cols=7,rows=6, tileW=100,tileH=50, originX=450,originY=100;
+const prices={house:80,cafe:100,school:120,shop:110,music:150,park:70};
+const info={
+ house:{emoji:'🏡',name:'Sweet Home',color:'#f4cfd8',roof:'#d99eaf',desc:'A cosy place to call your own.'},
+ cafe:{emoji:'☕',name:'Little Café',color:'#f3dfc7',roof:'#bd9b7e',desc:'A warm stop for tea and treats.'},
+ school:{emoji:'🏫',name:'School',color:'#d9e8f4',roof:'#9ebbd4',desc:'A happy place to learn together.'},
+ shop:{emoji:'🛍️',name:'Gift Shop',color:'#e7dcf4',roof:'#b7a3d3',desc:'Little gifts and lovely finds.'},
+ music:{emoji:'🎤',name:'Music Hall',color:'#f3d8e9',roof:'#c99bb9',desc:'A stage for music and fun.'},
+ park:{emoji:'🌷',name:'Flower Park',color:'#d8eddf',roof:'#9fc6a9',desc:'A peaceful corner full of flowers.'},
+ tree:{emoji:'🌳',name:'Little Tree',color:'#d8eddf',roof:'#9fc6a9',desc:'A little more green for the town.'}
+};
+let state={name:'Little Dreamer',coins:180,plots:{'3,3':'house'},trees:['1,1','5,1','2,4'],selected:null,plant:false};
+let selectedPlot=null;
+function load(){try{const s=JSON.parse(localStorage.getItem('mlw-save'));if(s&&s.plots)state={...state,...s}}catch(e){}}
+function save(){localStorage.setItem('mlw-save',JSON.stringify(state));document.getElementById('saveStatus').textContent='Saved just now on this device ✓';updateStats()}
+function updateStats(){
+ document.getElementById('coins').textContent=state.coins;
+ document.getElementById('buildings').textContent=Object.keys(state.plots).length;
+ document.getElementById('trees').textContent=state.trees.length;
+ document.getElementById('playerName').textContent=state.name;
+ document.getElementById('nameInput').value=state.name;
+}
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200)}
+function iso(x,y){return {x:originX+(x-y)*tileW/2,y:originY+(x+y)*tileH/2}}
+function drawTile(x,y,fill,stroke='#cbdccf'){
+ const p=iso(x,y);ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+tileW/2,p.y+tileH/2);ctx.lineTo(p.x,p.y+tileH);ctx.lineTo(p.x-tileW/2,p.y+tileH/2);ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=1.2;ctx.stroke();
+}
+function drawBuilding(x,y,type){
+ const p=iso(x,y),d=info[type];
+ ctx.save();
+ // soft shadow
+ ctx.fillStyle='#758b7b22';ctx.beginPath();ctx.ellipse(p.x,p.y+34,39,13,0,0,Math.PI*2);ctx.fill();
+ // front and side walls
+ ctx.beginPath();ctx.moveTo(p.x-28,p.y+2);ctx.lineTo(p.x,p.y+18);ctx.lineTo(p.x,p.y+48);ctx.lineTo(p.x-28,p.y+32);ctx.closePath();ctx.fillStyle=d.color;ctx.fill();ctx.strokeStyle='#b6aaad';ctx.stroke();
+ ctx.beginPath();ctx.moveTo(p.x,p.y+18);ctx.lineTo(p.x+28,p.y+2);ctx.lineTo(p.x+28,p.y+32);ctx.lineTo(p.x,p.y+48);ctx.closePath();ctx.fillStyle=d.roof;ctx.fill();ctx.stroke();
+ // roof top
+ ctx.beginPath();ctx.moveTo(p.x-28,p.y+2);ctx.lineTo(p.x,p.y-16);ctx.lineTo(p.x+28,p.y+2);ctx.lineTo(p.x,p.y+18);ctx.closePath();ctx.fillStyle=d.roof;ctx.fill();ctx.stroke();
+ ctx.font='23px serif';ctx.textAlign='center';ctx.fillText(d.emoji,p.x,p.y+16);
+ ctx.restore();
+}
+function drawTree(x,y){
+ const p=iso(x,y);ctx.save();ctx.fillStyle='#758b7b22';ctx.beginPath();ctx.ellipse(p.x,p.y+25,19,7,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#a9826f';ctx.fillRect(p.x-3,p.y+3,6,20);
+ ctx.fillStyle='#a8cfad';ctx.beginPath();ctx.arc(p.x,p.y-3,15,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#c4dfbf';ctx.beginPath();ctx.arc(p.x-7,p.y-8,8,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#d7e8c9';ctx.beginPath();ctx.arc(p.x+7,p.y-8,7,0,Math.PI*2);ctx.fill();ctx.restore();
+}
+function draw(){
+ ctx.clearRect(0,0,W,H);
+ const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#edf5ee');bg.addColorStop(1,'#e3eee6');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+ // distant clouds
+ ctx.fillStyle='#ffffff88';[[110,65],[720,75],[800,190]].forEach(([x,y])=>{ctx.beginPath();ctx.arc(x,y,18,0,Math.PI*2);ctx.arc(x+19,y-5,22,0,Math.PI*2);ctx.arc(x+39,y,16,0,Math.PI*2);ctx.fill()});
+ for(let sum=0;sum<cols+rows-1;sum++)for(let x=0;x<cols;x++){let y=sum-x;if(y>=0&&y<rows)drawTile(x,y,(x+y)%2?'#e4f0e4':'#eaf3e8')}
+ // path tiles
+ [[3,0],[3,1],[3,2],[3,4],[3,5],[0,3],[1,3],[2,3],[4,3],[5,3],[6,3]].forEach(([x,y])=>drawTile(x,y,'#f1e9dc','#e1d7c9'));
+ // objects back to front
+ const objects=[];
+ Object.entries(state.plots).forEach(([k,t])=>{const [x,y]=k.split(',').map(Number);objects.push({x,y,type:t})});
+ state.trees.forEach(k=>{const [x,y]=k.split(',').map(Number);objects.push({x,y,type:'tree'})});
+ objects.sort((a,b)=>(a.x+a.y)-(b.x+b.y));
+ objects.forEach(o=>o.type==='tree'?drawTree(o.x,o.y):drawBuilding(o.x,o.y,o.type));
+ if(selectedPlot){const p=iso(selectedPlot.x,selectedPlot.y);ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+50,p.y+25);ctx.lineTo(p.x,p.y+50);ctx.lineTo(p.x-50,p.y+25);ctx.closePath();ctx.strokeStyle='#a88fc7';ctx.lineWidth=3;ctx.stroke()}
+ // little path flowers
+ [[0,0],[6,0],[0,5],[6,5],[1,5],[5,5]].forEach(([x,y],i)=>{const p=iso(x,y);ctx.font='14px serif';ctx.fillText(i%2?'🌼':'✿',p.x,p.y+22)});
+}
+function canvasPoint(e){const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}}
+function hitTile(pt){let best=null,dist=1e9;for(let x=0;x<cols;x++)for(let y=0;y<rows;y++){const p=iso(x,y),dx=Math.abs(pt.x-p.x),dy=Math.abs(pt.y-(p.y+25));if(dx/(tileW/2)+dy/(tileH/2)<=1.03){const d=dx+dy;if(d<dist){dist=d;best={x,y}}}}return best}
+canvas.addEventListener('click',e=>{
+ const tile=hitTile(canvasPoint(e));if(!tile)return;const k=tile.x+','+tile.y;
+ if(state.plant){if(state.trees.includes(k)||state.plots[k]){toast('That spot is already occupied!');return}if(state.coins<15){toast('You need 15 coins to plant a tree.');return}state.coins-=15;state.trees.push(k);state.plant=false;selectedPlot=null;document.getElementById('plantMode').classList.remove('yellow');toast('A little tree has been planted 🌳');save();draw();return}
+ if(state.plots[k]){const d=info[state.plots[k]];toast(d.name+': '+d.desc);return}
+ if(state.trees.includes(k)){toast('A lovely little tree is growing here.');return}
+ selectedPlot=tile;
+ if(state.selected){const type=state.selected,price=prices[type];if(state.coins<price){toast('Not enough coins yet. Play a mini-game!');draw();return}
+ state.coins-=price;state.plots[k]=type;state.selected=null;selectedPlot=null;document.getElementById('selectionText').textContent='Your new building is ready!';toast(info[type].name+' added to your town!');save()
+ }else{document.getElementById('selectionText').textContent='Plot selected ('+(tile.x+1)+', '+(tile.y+1)+'). Choose a building above.'}
+ draw();
+});
+document.querySelectorAll('.build-btn').forEach(b=>b.addEventListener('click',()=>{state.selected=b.dataset.type;state.plant=false;document.getElementById('plantMode').classList.remove('yellow');document.getElementById('selectionText').textContent='Selected: '+info[state.selected].name+'. Now tap an empty plot.';toast('Choose an empty plot for '+info[state.selected].name);}));
+document.getElementById('cancelBuild').onclick=()=>{state.selected=null;state.plant=false;selectedPlot=null;document.getElementById('selectionText').textContent='No building selected.';document.getElementById('plantMode').classList.remove('yellow');draw()};
+document.getElementById('plantMode').onclick=()=>{state.selected=null;state.plant=!state.plant;selectedPlot=null;document.getElementById('plantMode').classList.toggle('yellow',state.plant);document.getElementById('selectionText').textContent=state.plant?'Planting mode: tap an empty plot.':'No building selected.';toast(state.plant?'Choose a spot for your tree.':'Planting cancelled.')};
+document.getElementById('resetView').onclick=()=>{selectedPlot=null;draw();toast('Town view refreshed.')};
+document.getElementById('saveName').onclick=()=>{const n=document.getElementById('nameInput').value.trim();if(!n){toast('Please enter a name first.');return}state.name=n;save();toast('Hello, '+n+'! 🌷')};
+document.getElementById('saveGame').onclick=()=>{save();toast('Your little world is saved!')};
+
+// Memory match game
+const modal=document.getElementById('modal'),cardsEl=document.getElementById('cards');
+let deck=[],first=null,lock=false,matches=0,turns=0,rewarded=false;
+function startGame(){deck=['🌸','🌸','🍓','🍓','🐣','🐣'].sort(()=>Math.random()-.5).map((v,i)=>({v,id:i,open:false,done:false}));first=null;lock=false;matches=0;turns=0;rewarded=false;renderCards();document.getElementById('gameResult').textContent='Find all 3 pairs to win.'}
+function renderCards(){cardsEl.innerHTML='';deck.forEach(c=>{const b=document.createElement('button');b.textContent=c.done||c.open?c.v:'❔';if(c.open||c.done)b.classList.add('selected');b.disabled=c.done||c.open||lock;b.onclick=()=>flip(c.id);cardsEl.appendChild(b)})}
+function flip(id){if(lock)return;const c=deck.find(x=>x.id===id);if(!c||c.open||c.done)return;c.open=true;renderCards();if(first===null){first=id;return}turns++;const a=deck.find(x=>x.id===first);if(a.v===c.v){a.done=c.done=true;matches++;first=null;renderCards();if(matches===3){const prize=Math.max(15,40-Math.max(0,turns-3)*3);if(!rewarded){state.coins+=prize;rewarded=true;save()}document.getElementById('gameResult').textContent='You did it in '+turns+' turns! You earned '+prize+' coins 🌟';toast('+'+prize+' coins! Great job!')}else document.getElementById('gameResult').textContent='A match! Keep going 🌼'}else{lock=true;document.getElementById('gameResult').textContent='Not a match — try another pair!';setTimeout(()=>{a.open=false;c.open=false;first=null;lock=false;renderCards()},750)}}
+document.getElementById('playGame').onclick=()=>{modal.classList.add('show');startGame()};
+document.getElementById('closeGame').onclick=()=>modal.classList.remove('show');
+document.getElementById('restartGame').onclick=startGame;
+modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
+load();updateStats();draw();
+})();
+</script>
+</body>
+</html>
